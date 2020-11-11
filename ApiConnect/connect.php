@@ -2,6 +2,6 @@
 define('host', 'localhost');
 define('user', 'root');
 define('pass', '');
-define('db', 'system_greciastore');
+define('db', 'db_goyan');
 
-$conn = mysqli_connect(host, user, pass, db) or die('Sin conexion al servidor');
+$conn = mysqli_connect(host, user, pass, db) or die('Error al conectar al servidor.');
