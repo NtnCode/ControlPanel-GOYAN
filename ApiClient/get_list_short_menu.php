@@ -11,7 +11,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         INNER JOIN type_menu t on t.id_typemenu  = m.id_typemenu
         INNER JOIN category_menu c on c.id_catmenu  = m.id_category
         INNER JOIN detail_menu d on m.id_menu = d.id_menu
-        ";
+        WHERE m.state_menu = 1
+        LIMIT 12";
 
     $result = mysqli_query($conn, $query);
     $response = array();
@@ -27,7 +28,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
             'image_menu'        =>$row['image_menu'],
             'state_menu'        =>$row['state_menu'],
             'id_catmenu'        =>$row['id_catmenu'],
-            'name_catmenu'      =>$row['naame_catmenu'],
+            'name_catmenu'      =>$row['name_catmenu'],
             'id_typemenu'       =>$row['id_typemenu'],
             'name_typemenu'     =>$row['name_typemenu'],
             'price_detmenu'     =>$row['price_detmenu']
