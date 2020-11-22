@@ -1,6 +1,6 @@
 <?php
 include('../ApiConnect/connect.php');
-//error_reporting(0);
+error_reporting(0);
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
 
@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
     }else if ($type === 'product') {
 
-        $queryP = "SELECT p.id_product, p.name_product, p.state_product, p.image_product,
+        $queryP = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, p.description_product,
             b.id_brandprod, b.name_brandprod, c.id_catprod, c.name_catprod, 
             d.priceunit_detprod, d.stock_detprod, d.stockmin_detprod, 
             d.pricedozen_detprod, d.qtyperunit_detprod
@@ -65,6 +65,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
                 array(
                 'id_product'         =>$rowP['id_product'],
                 'name_product'       =>$rowP['name_product'],
+                'description_product'=>$rowP['description_product'],
                 'state_product'      =>$rowP['state_product'],
                 'image_product'      =>$rowP['image_product'],
                 'id_brandprod'       =>$rowP['id_brandprod'],
