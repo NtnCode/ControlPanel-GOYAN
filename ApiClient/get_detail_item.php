@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
     if($type === 'menu'){
 
-        $queryM = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, 
+        $queryM = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, m.target_item,
         c.id_catmenu , c.name_catmenu , t.id_typemenu, t.name_typemenu,
         d.price_detmenu
         FROM menu m
@@ -36,8 +36,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
                 'name_catmenu'      =>$rowM['name_catmenu'],
                 'id_typemenu'       =>$rowM['id_typemenu'],
                 'name_typemenu'     =>$rowM['name_typemenu'],
-                'price_detmenu'     =>$rowM['price_detmenu']
-
+                'price_detmenu'     =>$rowM['price_detmenu'],
+                'target_item'     =>$rowM['target_item']
                 )
             );
         }
@@ -46,10 +46,10 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
     }else if ($type === 'product') {
 
-        $queryP = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, p.description_product,
+        $queryP = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, p.description_product, p.target_item,
             b.id_brandprod, b.name_brandprod, c.id_catprod, c.name_catprod, 
             d.priceunit_detprod, d.stock_detprod, d.stockmin_detprod, 
-            d.pricedozen_detprod, d.qtyperunit_detprod
+            d.qtyperunit_detprod
             FROM product p
             INNER JOIN brand_product b on p.id_brandprod   = b.id_brandprod 
             INNER JOIN category_product c on p.id_catprod   = c.id_catprod 
@@ -75,21 +75,16 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
                 'priceunit_detprod'  =>$rowP['priceunit_detprod'],
                 'stock_detprod'      =>$rowP['stock_detprod'],
                 'stockmin_detprod'   =>$rowP['stockmin_detprod'],
-                'pricedozen_detprod' =>$rowP['pricedozen_detprod'],
-                'qtyperunit_detprod' =>$rowP['qtyperunit_detprod']
+                'qtyperunit_detprod' =>$rowP['qtyperunit_detprod'],
+                'target_item'     =>$rowP['target_item']
                 )
             );
         }
 
         echo json_encode($responseprod);
 
-    }
-
-    
-
-    
+    }   
 
     mysqli_close($conn);
-
 
 }

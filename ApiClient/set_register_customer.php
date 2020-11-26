@@ -21,7 +21,6 @@
 		$phone = stripslashes($phone);
 		$photo = stripslashes($photo);
 
-
         $id = $conn->real_escape_string($id);
         $user = $conn->real_escape_string($user);
         $firstn = $conn->real_escape_string($firstn);
@@ -29,7 +28,6 @@
         $token = $conn->real_escape_string($token);
 		$phone = $conn->real_escape_string($phone);
 		$photo = $conn->real_escape_string($photo);
-
     
         $stmt=$conn->prepare("INSERT INTO customer ( id_customer,
 			firstname_customer,
@@ -41,7 +39,7 @@
 			state_customer)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt->bind_param("ssssisi", $id, $firstn, $lastn, $user, $token, $phone, $photo, $state);
+        $stmt->bind_param("ssssiisi", $id, $firstn, $lastn, $user, $token, $phone, $photo, $state);
         
         if ($stmt->execute()) {
             $error ="done";

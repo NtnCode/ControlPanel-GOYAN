@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     $response = array();
 
     if ($code > 0) {
-        $query = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, 
+        $query = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, m.target_item,    
             c.id_catmenu , c.name_catmenu , t.id_typemenu, t.name_typemenu,
             d.price_detmenu
             FROM menu m
@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             LIMIT $limit";
 
     } else if ($code == 0){
-        $query = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, 
+        $query = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, m.target_item,
             c.id_catmenu , c.name_catmenu , t.id_typemenu, t.name_typemenu,
             d.price_detmenu
             FROM menu m
@@ -51,7 +51,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             'name_catmenu'      =>$row['name_catmenu'],
             'id_typemenu'       =>$row['id_typemenu'],
             'name_typemenu'     =>$row['name_typemenu'],
-            'price_detmenu'     =>$row['price_detmenu']
+            'price_detmenu'     =>$row['price_detmenu'],
+            'target_item'     =>$row['target_item']
             )
         );
     }

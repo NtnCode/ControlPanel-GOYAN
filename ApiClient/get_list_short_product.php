@@ -9,7 +9,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
     if (isset($_POST['param'])) {
 
-        $query = "SELECT p.id_product, p.name_product, p.state_product, p.image_product,
+        $query = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, p.target_item,
             b.id_brandprod, b.name_brandprod, c.id_catprod, c.name_catprod, d.priceunit_detprod, d.stock_detprod
             FROM product p
             INNER JOIN brand_product b on p.id_brandprod   = b.id_brandprod 
@@ -20,7 +20,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
             LIMIT $limit";
 
     }else{
-        $query = "SELECT p.id_product, p.name_product, p.state_product, p.image_product,
+        $query = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, p.target_item,
             b.id_brandprod, b.name_brandprod, c.id_catprod, c.name_catprod, d.priceunit_detprod, d.stock_detprod
             FROM product p
             INNER JOIN brand_product b on p.id_brandprod   = b.id_brandprod 
@@ -49,7 +49,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
             'id_catprod'         =>$row['id_catprod'],
             'name_catprod'       =>$row['name_catprod'],
             'priceunit_detprod'  =>$row['priceunit_detprod'],
-            'stock_detprod'      =>$row['stock_detprod']
+            'stock_detprod'      =>$row['stock_detprod'],
+            'target_item'     =>$row['target_item']
 
             )
         );
