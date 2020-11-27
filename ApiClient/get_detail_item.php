@@ -2,13 +2,31 @@
 include('../ApiConnect/connect.php');
 error_reporting(0);
 
-if($_SERVER['REQUEST_METHOD']=='POST'){
+if($_SERVER['REQUEST_METHOD']=== 'POST'){
 
     $type = $_POST['type'];
     $id = $_POST['id'];
+    $idc = $_POST['id_customer'];
+
+    $id = stripslashes($id);
+    $idc = stripslashes($idc);
+    $id = $conn->real_escape_string($id);
+    $idc = $conn->real_escape_string($idc);
 
     $responsemenu = array();
     $responseprod = array();
+    $ch_qty =0;
+
+    if (!empty($idc)) {
+        $querys = "SELECT * FROM temporal_cart WHERE id_customer = '$idc' and id_item = $id";
+
+        $result = mysqli_query($conn, $querys);
+        while ($row1 = mysqli_fetch_assoc($result)) {
+            $ch_qty = $row1['quantity_tempcart'];
+        }
+    }
+
+    //echo ($ch_qty);
 
     if($type === 'menu'){
 
@@ -37,14 +55,15 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
                 'id_typemenu'       =>$rowM['id_typemenu'],
                 'name_typemenu'     =>$rowM['name_typemenu'],
                 'price_detmenu'     =>$rowM['price_detmenu'],
-                'target_item'     =>$rowM['target_item']
+                'target_item'     =>$rowM['target_item'],
+                'countitemcart'   =>$ch_qty
                 )
             );
         }
         echo json_encode($responsemenu);
 
 
-    }else if ($type === 'product') {
+    }elseif ($type === 'product') {
 
         $queryP = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, p.description_product, p.target_item,
             b.id_brandprod, b.name_brandprod, c.id_catprod, c.name_catprod, 
@@ -76,7 +95,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
                 'stock_detprod'      =>$rowP['stock_detprod'],
                 'stockmin_detprod'   =>$rowP['stockmin_detprod'],
                 'qtyperunit_detprod' =>$rowP['qtyperunit_detprod'],
-                'target_item'     =>$rowP['target_item']
+                'target_item'     =>$rowP['target_item'],
+                'countitemcart'   =>$ch_qty
                 )
             );
         }

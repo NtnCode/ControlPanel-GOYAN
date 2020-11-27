@@ -22,7 +22,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             ORDER BY $order
             LIMIT $limit";
 
-    } else if ($code == 0){
+    } elseif ($code == 0){
         $query = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, m.target_item,
             c.id_catmenu , c.name_catmenu , t.id_typemenu, t.name_typemenu,
             d.price_detmenu
