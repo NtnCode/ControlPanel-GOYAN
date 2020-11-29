@@ -4,9 +4,9 @@
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = $_POST['id'];
-        $user = $_POST['mail'];
-        $firstn = $_POST['name'];
-        $lastn = $_POST['lname'];
+        $name = $_POST['mail'];
+        $direction = $_POST['direction'];
+        $detail = $_POST['lname'];
         $token = $_POST['token'];
         $phone = $_POST['phone'];
 		$photo = $_POST['photo'];
@@ -14,17 +14,17 @@
 		$state = 1;
 
         $id = stripslashes($id);
-        $user = stripslashes($user);
-        $firstn = stripslashes($firstn);
-        $lastn = stripslashes($lastn);
+        $name = stripslashes($name);
+        $direction = stripslashes($direction);
+        $detail = stripslashes($detail);
         $token = stripslashes($token);
 		$phone = stripslashes($phone);
 		$photo = stripslashes($photo);
 
         $id = $conn->real_escape_string($id);
-        $user = $conn->real_escape_string($user);
-        $firstn = $conn->real_escape_string($firstn);
-        $lastn = $conn->real_escape_string($lastn);
+        $name = $conn->real_escape_string($name);
+        $direction = $conn->real_escape_string($direction);
+        $detail = $conn->real_escape_string($detail);
         $token = $conn->real_escape_string($token);
 		$phone = $conn->real_escape_string($phone);
 		$photo = $conn->real_escape_string($photo);
@@ -39,7 +39,7 @@
 			state_customer)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt->bind_param("ssssiisi", $id, $firstn, $lastn, $user, $token, $phone, $photo, $state);
+        $stmt->bind_param("ssssiisi", $id, $direction, $detail, $name, $token, $phone, $photo, $state);
         
         if ($stmt->execute()) {
             $error ="done";

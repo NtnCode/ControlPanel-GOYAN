@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
 
     $idprod = $_POST['id_item'];
     $idcus = $_POST['id_cus'];
-    $nprod = $_POST['name'];
+    $nprod = $_POST['direction'];
     $imgprod = $_POST['image'];
     $priceprod = $_POST['price'];
     $target = $_POST['target'];

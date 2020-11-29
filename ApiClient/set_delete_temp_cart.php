@@ -9,7 +9,7 @@
 		
 		if ($type === 'oneitem') {
 			# code...
-			$query = "DELETE FROM temporal_cart WHERE id_item = $id AND id_customer = '$id_customer'";
+			$query = "DELETE FROM temporal_cart WHERE id_tempcart = $id AND id_customer = '$id_customer'";
 			$result = mysqli_query($conn, $query);
 			
 			if ($result) {
