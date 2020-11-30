@@ -1,6 +1,6 @@
 <?php
 	require_once '../apiConnect/connect.php';
-	//error_reporting(0);
+	error_reporting(0);
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $id = $_POST['id'];
