@@ -30,7 +30,8 @@ if($_SERVER['REQUEST_METHOD']=== 'POST'){
 
     if($type === 'menu'){
 
-        $queryM = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, m.state_menu, m.target_item,
+        $queryM = "SELECT m.id_menu , m.name_menu, m.description_menu, m.image_menu, 
+        m.state_menu, m.target_item,
         c.id_catmenu , c.name_catmenu , t.id_typemenu, t.name_typemenu,
         d.price_detmenu
         FROM menu m
@@ -65,7 +66,8 @@ if($_SERVER['REQUEST_METHOD']=== 'POST'){
 
     }elseif ($type === 'product') {
 
-        $queryP = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, p.description_product, p.target_item,
+        $queryP = "SELECT p.id_product, p.name_product, p.state_product, p.image_product, 
+            p.description_product, p.target_item,
             b.id_brandprod, b.name_brandprod, c.id_catprod, c.name_catprod, 
             d.priceunit_detprod, d.stock_detprod, d.stockmin_detprod, 
             d.qtyperunit_detprod
@@ -73,7 +75,7 @@ if($_SERVER['REQUEST_METHOD']=== 'POST'){
             INNER JOIN brand_product b on p.id_brandprod   = b.id_brandprod 
             INNER JOIN category_product c on p.id_catprod   = c.id_catprod 
             INNER JOIN detail_product d on p.id_product  = d.id_product 
-            WHERE p.id_product = '$id'";
+            WHERE p.id_product = $id";
 
         $resultprod = mysqli_query($conn, $queryP);
 

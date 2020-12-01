@@ -13,7 +13,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         if ($type === '1') {
 
             $query = "SELECT m.id_dailymenu, m.id_menu , m.name_dailymenu, 
-            m.price_dailymenu, m.image_dailymenu, m.state_dailymenu, 
+            m.price_dailymenu, m.image_dailymenu, m.state_dailymenu, m.target_dailymenu,
             t.id_typemenu, t.name_typemenu
             FROM daily_menu m
             INNER JOIN type_menu t on t.id_typemenu  = m.id_typemenu
@@ -22,7 +22,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         } elseif ($type === '2') {
 
             $query = "SELECT m.id_dailymenu, m.id_menu , m.name_dailymenu, 
-            m.price_dailymenu, m.image_dailymenu, m.state_dailymenu, 
+            m.price_dailymenu, m.image_dailymenu, m.state_dailymenu, m.target_dailymenu,
             t.id_typemenu, t.name_typemenu
             FROM daily_menu m
             INNER JOIN type_menu t on t.id_typemenu  = m.id_typemenu
@@ -31,7 +31,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         } elseif ($type === '3') {
             
             $query = "SELECT m.id_dailymenu, m.id_menu , m.name_dailymenu, 
-            m.price_dailymenu, m.image_dailymenu, m.state_dailymenu, 
+            m.price_dailymenu, m.image_dailymenu, m.state_dailymenu, m.target_dailymenu,
             t.id_typemenu, t.name_typemenu
             FROM daily_menu m
             INNER JOIN type_menu t on t.id_typemenu  = m.id_typemenu
@@ -54,7 +54,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
                 'state_dailymenu'   =>$row['state_dailymenu'],
                 'id_typemenu'       =>$row['id_typemenu'],
                 'name_typemenu'     =>$row['name_typemenu'],
-                'target_item'     =>$row['target_item']
+                'target_dailymenu'     =>$row['target_dailymenu']
 
                 )
             );

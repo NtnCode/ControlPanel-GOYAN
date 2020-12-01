@@ -32,7 +32,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
             'id_typemenu'       =>$row['id_typemenu'],
             'name_typemenu'     =>$row['name_typemenu'],
             'price_detmenu'     =>$row['price_detmenu'],
-            'target_item'     =>$row['target_item']
+            'target_item'       =>$row['target_item']
 
             )
         );
