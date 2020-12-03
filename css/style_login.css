@@ -1,0 +1,39 @@
+.border-md {
+    border-width: 2px;
+
+}
+
+body {
+    min-height: 100vh;
+    background-color: #fafafa;
+    color: #fafafa;
+}
+
+.frm {
+    border-radius: 20px;
+    padding: 20px;
+    margin-block-end: 20px auto;
+    margin-block-start: 20px auto;
+    background-color: #fafafa;
+    transition: all 0.4s cubic-bezier(.25, .8, .25, 1);
+}
+
+.frm:hover {
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+input{
+    font-family: 'Open sans';
+    color: blue;
+}
+footer .brand-dev p{
+    margin-top: -23px;
+    color: gray;
+    font-size: 12px;
+}
+footer .dev-icon{
+    color: red;
+}

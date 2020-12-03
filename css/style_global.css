@@ -1,0 +1,171 @@
+/*
+
+/*
+::::::::::::::::::::::::::::::::::::::::::::::::::::
+Bootstrap 4 breakpoints
+*/
+
+/* Small devices (landscape phones, 544px and up) 
+@media (min-width: 576px) {
+    .resize-font {
+        font-size: 16px;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) 
+@media (min-width: 768px) {
+    .resize-font {
+        font-size: 22px;
+    }
+}
+
+/* Large devices (desktops, 992px and up) 
+@media (min-width: 992px) {
+    .resize-font {
+        font-size: 40px;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) 
+@media (min-width: 1200px) {
+    .resize-font {
+        font-size: 48px;
+    }
+}
+
+/***********************************************************************
+
+html {
+    font-size: 1rem;
+}
+
+h1 {
+    font-size: 1.2rem;
+}
+
+h2 {
+    font-size: 1.1rem;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 1.1rem;
+    }
+
+    h1 {
+        font-size: 1.3rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (min-width: 991px) {
+    html {
+        font-size: 1.2rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    html {
+        font-size: 1.2rem;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+}
+::::::::::::::::::::::::::::::::::::::::::::::::::::
+*/
+
+
+.margin-all-20 {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin: auto;
+}
+
+/** ESTILO DE CARD CON SHADOW ***/
+.card-hover-style {
+    transition: 0.4s all;
+}
+
+.card-hover-style:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+.icon-hover-yellow {
+    transition: 0.3s all;
+}
+
+.icon-hover-yellow:hover {
+    color: rgba(230, 202, 40, 0.61);
+    box-shadow: 0 4px 8px 0 rgba(196, 196, 196, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+/********** COLORES PREDIFINIDOS ******/
+
+.has-color-material-yellow-light {
+    background-color: #ffe082;
+}
+
+.has-color-material-yellow-normal {
+    background-color: #ffc107;
+}
+
+.has-color-material-red-light {
+    background-color: #ef9a9a;
+}
+
+.has-color-material-red-normal {
+    background-color: #e57373;
+}
+
+.has-color-material-blue-light {
+    background-color: #90caf9;
+}
+
+.has-color-material-blue-normal {
+    background-color: #42a5f5;
+}
+
+.has-color-material-green-light {
+    background-color: #66bb6a;
+}
+
+.has-color-material-green-normal {
+    background-color: #a5d6a7;
+}
+
+.is-text-black{
+    color: #212121;
+}
+
+.is-text-gray {
+    color: gray;
+}
+
+/*.active {
+    background-color: whitesmoke;
+    border-radius: 1rem;
+    border-style: solid;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    border-width: 0.1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-color: #ffc107;
+}*/
