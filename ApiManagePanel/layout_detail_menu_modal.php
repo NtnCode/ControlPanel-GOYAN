@@ -28,7 +28,7 @@
 
                     $sstate = "<span class='text-success'>Se encuentra disponible.</span>";
                     
-                }elseif($state=0){
+                }elseif($state==0){
                     $sstate = "<span class='text-danger'>Se encuentra deshabilitado.</span>";
                 }
 
@@ -53,7 +53,7 @@
                             <h6 class="mt-3" style="font-family:Lato; color: #000">Precio:&nbsp;S/. '. $row["price_detmenu"]. '</h6>
                             <h6 class="mt-3" style="font-family:Lato; color: #000">Tipo: '. $row["name_typemenu"] . '</h6>
                             <h6 class="mt-3" style="font-family:Lato; color: #000">Categoria: '. $row["name_catmenu"]. '</h6>
-                            <h6 class="mt-3" style="font-family:Lato; color: #000">Estado del Producto: '. $sstate. '</h6>
+                            <h6 class="mt-3" style="font-family:Lato; color: #000">Estado del Menú: '. $sstate. '</h6>
                             <h6 class="mt-3" style="font-family:Lato; color: #000">Descripcion:</h6>
                             <h6 class="mt-2 small" style="font-family:Lato; color: #000">'. $row["description_menu"] .'</h6>
                         </div>

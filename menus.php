@@ -18,7 +18,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>RyT - Panel de Control</title>
+        <title>GOYAN Catering - Panel de Control</title>
 
         <link rel="shortcut icon" href="assets/image/goyan-logo.png" type="image/png">
 
@@ -439,7 +439,7 @@
                         <!-- DataTales Example -->
                         <div class="card card-hover-style mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Tabla de todos los productos</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">Tabla de todos los menús</h6>
                             </div>
                             <?php
               if ($result->num_rows > 0) {
@@ -564,7 +564,7 @@
             <div class="modal-dialog modal-xl" style="border-radius: 10px; border: none;">
                 <div class="modal-content" style="border-radius: 10px; border: none;">
                     <div class="modal-header">
-                        <Span class="modal-title h5" style="color: #396c96;" id="ModalNotifLabel">
+                        <Span class="modal-title h5 font-weight-bold"  id="ModalNotifLabel">
                             <i class="fas faw fa-info-circle text-primary"></i>&nbsp;&nbsp;Información</span>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -574,14 +574,15 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-info card-hover-style" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-secondary card-hover-style" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
             </div>
             <script>
+                
                 function getDetail(id) {
                     jQuery.ajax({
-                        url: 'apiManagePanel/get_detail_menu_modal.php',
+                        url: 'apiManagePanel/layout_detail_menu_modal.php',
                         method: "POST",
                         data: {
                             id_menu: id
@@ -589,7 +590,6 @@
                         success: function (data) {
                             $('#item_detail').html(data);
                             $('#modalDetailMenu').modal('show');
-
                         }
                     });
                 }

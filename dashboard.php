@@ -18,7 +18,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>RyT - Panel de Control</title>
+        <title>GOYAN Catering - Panel de Control</title>
 
         <link rel="shortcut icon" href="assets/image/goyan-logo.png" type="image/png">
 

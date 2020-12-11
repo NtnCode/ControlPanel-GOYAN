@@ -43,7 +43,7 @@ function reservationRechazed(id_cus, id_res) {
     var id = id_cus;
     var title = "¡Su Reservación fue rechazada!";
     var message = "En unos minutos puede intentarlo nuevamente.";
-    
+
     $("#btn-con").addClass('disabled');
 
     $.ajax({
@@ -97,7 +97,7 @@ function updateRes(id, idc, typ) {
             //window.location.replace("reservation.php");
             console.log(" update");
             changeButtons();
-            
+
         },
         error: function (req, err) {
 
@@ -110,19 +110,19 @@ function updateRes(id, idc, typ) {
 function verifyStatesButtons(sta) {
     var st = sta;
     var btns = document.getElementById("gr-buttons");
-    if (st == 1) {
-        btns.style.display = "none";
-    } else if (st == 0) {
-        btns.style.display = "flex";
-    }else if (st == 2) {
+
+    if (st >= 1 && st <= 3) {
+        btns.style.display = "block";
+    } else if (st >= 4) {
         btns.style.display = "none";
     }
-
+    console.log("asdasd");
 }
+
 function DisableStatesButtons() {
-    
+
     $("#btn-con").addClass('disabled');
-    
+
 }
 
 function changeButtons() {
