@@ -158,6 +158,10 @@ h2 {
     color: gray;
 }
 
+.is-text-yellow {
+    color: #ffc107;
+}
+
 /*.active {
     background-color: whitesmoke;
     border-radius: 1rem;

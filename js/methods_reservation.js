@@ -1,9 +1,10 @@
 //CONFIRMA MEDIANTE UNA NOTIFICACION LA RESEVACION Y PROCEDE A ACTUALIZAR
-function reservationConfirmed(id_cus, id_res) {
+function reservationConfirmed(id_cus, id_res, message) {
     var id = id_cus;
-    var title = "¡Su Reservación está confirmada!";
-    var message = "Acerquese a la ferreteria para su recojo.";
-    $("#btn-con").addClass('disabled');
+    var title = "Estado de su reservación";
+    var msg = "¡Su reservación fue confirmado!";
+    $("#btn-conf").addClass('disabled');
+    $("#btn-deny").addClass('disabled');
 
     $.ajax({
         url: "pushNotifications/sendSinglePush.php",
@@ -11,29 +12,48 @@ function reservationConfirmed(id_cus, id_res) {
         data: {
             'username': id,
             'title': title,
-
-            'message': message
+            'message': msg
         },
         success: function (data) {
-            //var datax = JSON.stringify(data);
-            /*json = JSON.parse(JSON.stringify(data));
-            console.log("" + json[0]);*/
-            /*data = JSON.parse(JSON.stringify(data));
-            alert(data.success);
-            alert(data.multicast_id);*/
-            $('#PositiveModal').modal('hide');
 
-            $('#toastDone').toast('show');
+            let succ = 0;
+            let err = 0;
 
-            var type = "yes";
-            updateRes(id_res, id_cus, type);
+            if (data) {
+                var result = $.parseJSON(data);
+                //console.log("" + result['multicast_id'] + "\nsucc: " + result['success']);
+
+                succ = result['success'];
+                err = result['failure'];
+
+                if (succ == 1) {
+
+                    $('#PositiveModal').modal('hide');
+                    $('#toastDone').toast('show');
+                    $("#gr-buttons").addClass('d-none');
+                    $("#gr-refresh").removeClass('d-none');
+                    var type = "yes";
+                    //updateRes(id_res, id_cus, type);
+
+                } else if (err == 1) {
+
+                    $("#btn-conf").removeClass('disabled');
+                    $("#btn-deny").removeClass('disabled');
+
+                    $('#PositiveModal').modal('hide');
+                    $('#toastError').toast('show');
+
+                }
+            }
+
         },
         error: function (req, err) {
-            //console.log('my message' + err);
+            console.log('my message' + err);
             $('#PositiveModal').modal('hide');
             $('#toastError').toast('show');
+            $("#btn-conf").removeClass('disabled');
+            $("#btn-deny").removeClass('disabled');
             console.log("no se logro enviar la notificacion");
-
         }
     });
 }
@@ -56,17 +76,37 @@ function reservationRechazed(id_cus, id_res) {
             'message': message
         },
         success: function (data) {
-            //var datax = JSON.stringify(data);
-            /*json = JSON.parse(JSON.stringify(data));
-            console.log("" + json[0]);*/
-            /*data = JSON.parse(JSON.stringify(data));
-            alert(data.success);
-            alert(data.multicast_id);*/
-            $('#NegativeModal').modal('hide');
-            $('#toastRechazed').toast('show');
-            var type = "no";
-            updateRes(id_res, id_cus, type);
-            //window.location(reservation.php);
+
+            let succ = 0;
+            let err = 0;
+
+            if (data) {
+                var result = $.parseJSON(data);
+                //console.log("" + result['multicast_id'] + "\nsucc: " + result['success']);
+
+                succ = result['success'];
+                err = result['failure'];
+
+                if (succ == 1) {
+
+                    $('#NegativeModal').modal('hide');
+                    $('#toastRechazed').toast('show');
+                    $("#gr-buttons").addClass('d-none');
+                    $("#gr-refresh").removeClass('d-none');
+                    var type = "no";
+                    //updateRes(id_res, id_cus, type);
+
+                } else if (err == 1) {
+
+                    console.log('my message' + err);
+                    $('#NegativeModal').modal('hide');
+                    $('#toastError').toast('show');
+                    $("#btn-conf").removeClass('disabled');
+                    $("#btn-deny").removeClass('disabled');
+                    console.log("no se logro enviar la notificacion");
+
+                }
+            }
         },
         error: function (req, err) {
             //console.log('my message' + err);
@@ -77,6 +117,8 @@ function reservationRechazed(id_cus, id_res) {
         }
     });
 }
+
+
 
 //ACTUALIZA EL ESTADO DE LA RESERVACION
 function updateRes(id, idc, typ) {
@@ -96,7 +138,7 @@ function updateRes(id, idc, typ) {
         success: function (data) {
             //window.location.replace("reservation.php");
             console.log(" update");
-            changeButtons();
+            //changeButtons();
 
         },
         error: function (req, err) {
@@ -106,26 +148,8 @@ function updateRes(id, idc, typ) {
         }
     });
 }
-// CONFIGURA LOS BOTONES SEGUN EL ESTADO
-function verifyStatesButtons(sta) {
-    var st = sta;
-    var btns = document.getElementById("gr-buttons");
 
-    if (st >= 1 && st <= 3) {
-        btns.style.display = "block";
-    } else if (st >= 4) {
-        btns.style.display = "none";
-    }
-    console.log("asdasd");
-}
-
-function DisableStatesButtons() {
-
-    $("#btn-con").addClass('disabled');
-
-}
-
-function changeButtons() {
-    var btns = document.getElementById("gr-buttons");
-    btns.style.display = "none";
+function refreshPage() {
+    location.reload();
+    return false;
 }

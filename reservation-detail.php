@@ -8,17 +8,18 @@
       if (isset($_GET['cdg'])) {
           $cdg=$_GET['cdg'];
           $result=$con->query(
-              "SELECT r.id_reservation, r.time_reservation, r.date_reservation, r.timecollect_reservation, 
-                r.state_reservation, tl.id_timelinereserv, tl.name_timelinereserv,
-                c.firstname_customer, c.lastname_customer, c.phone_customer, r.id_customer,
+              "SELECT r.id_reservation, r.time_reservation, r.date_reservation, r.timecollect_reservation,
+                r.detail_reservation, r.state_reservation,
+                tl.id_timelinereserv, tl.name_timelinereserv, tl.description_timelinereserv,
+                c.firstname_customer, c.lastname_customer, c.phone_customer, c.id_customer, c.photo_customer, c.email_customer,
                 tp.id_typepay, tp.name_typepay, tp.description_typepay,
-                (SELECT SUM(dr.quantity_detres) FROM detail_reservation dr WHERE dr.id_reservation = r.id_reservation) As quantity_detres
+                (SELECT SUM(dr.quantity_detres) FROM detail_reservation dr WHERE dr.id_reservation = r.id_reservation) As quantity_detres,
+                (SELECT SUM(dr.total_detres) FROM detail_reservation dr WHERE dr.id_reservation = r.id_reservation) As gtotal_detres
                 FROM reservation r 
                 INNER JOIN customer c ON r.id_customer = c.id_customer
                 INNER JOIN timeline_reservation tl ON tl.id_timelinereserv = r.id_timelinereserv
                 INNER JOIN type_pay tp ON tp.id_typepay = r.id_typepay
-                WHERE r.id_reservation ='$cdg'
-                ORDER BY r.date_reservation"
+                WHERE r.id_reservation ='$cdg'"
           );
         $rowSel = $result->fetch_array(); 
 ?>
@@ -48,6 +49,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
 
         <link rel="stylesheet" href="css/style_global.css">
+        <link rel="stylesheet" href="css/timeline.css">
+        <link rel="stylesheet" href="css/style_reservationdetail.css">
+
         <!-- Custom styles for this template -->
         <link href="css/sb-admin-2.css" rel="stylesheet">
 
@@ -56,6 +60,7 @@
 
         <!-- JavaScript -->
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <script src="js/multiple-carousel.js"></script>
 
         <!-- CSS -->
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
@@ -67,8 +72,23 @@
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
 
     </head>
+    <style>
+        .carousel-control-prev-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%6db3b7' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+        }
 
-    <body id="page-top">
+        .carousel-control-next-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%6db3b7' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            bottom: 0%;
+            width: 2%;
+        }
+    </style>
+
+    <body id="page-top" onload="javascript:get_timeline('<?php echo $rowSel['id_reservation']; ?>')">
 
         <script type="text/javascript">
             function refresh_count_notif() {
@@ -84,6 +104,20 @@
 
             //tnotif = setInterval(refresh_count_notif, 1000);
             //onload="javascript:verifyStatesButtons(<?php echo $rowSel['name_timelinereserv']; ?>)"
+
+            function get_timeline(id) {
+
+                jQuery.ajax({
+                    url: 'apiManagePanel/layout_detail_reserv_timeline.php',
+                    method: 'POST',
+                    data: {
+                        id_reservation: id
+                    },
+                    success: function (results) {
+                        jQuery("#retrieve-timeline").html(results);
+                    }
+                });
+            }
         </script>
 
         <!-- Page Wrapper -->
@@ -250,10 +284,10 @@
                     <div id="toastDone" class="toast rounded" role="alert" data-delay="6000" data-autohide="true"
                         style=" min-width: 300px; ">
                         <div class="toast-header">
-                            <div class="icon-circle bg-primary mr-2">
+                            <div class="icon-circle bg-success mr-2">
                                 <i class="fas fa-flag text-white"></i>
                             </div>
-                            <strong class="mr-auto text-primary">Reservación Notificada</strong>
+                            <strong class="mr-auto text-success">Reservación Notificada</strong>
 
                             <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -263,6 +297,7 @@
                     </div>
 
                 </div>
+
                 <div class=" d-flex flex-column p-4 "
                     style="margin-top: 50px; min-height: 200px; position: absolute; top: 0; right: 0;">
 
@@ -272,7 +307,7 @@
                             <div class="icon-circle bg-danger mr-2">
                                 <i class="fas fa-flag text-white"></i>
                             </div>
-                            <strong class="mr-auto text-danger">Error al reservar</strong>
+                            <strong class="mr-auto text-danger">¡Hubo un problema!</strong>
 
                             <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                                 <span aria-hidden="true">×</span>
@@ -282,6 +317,7 @@
                     </div>
 
                 </div>
+
                 <div class=" d-flex flex-column p-4 "
                     style="margin-top: 50px; min-height: 200px; position: absolute; top: 0; right: 0;">
 
@@ -302,11 +338,12 @@
 
                 </div>
 
+
                 <!-- Main Content -->
                 <div id="content">
 
                     <!-- Topbar -->
-                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top ">
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top">
 
                         <!-- Sidebar Toggle (Topbar) -->
                         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
@@ -354,9 +391,6 @@
                                 </div>
                             </li>
 
-
-
-
                             <!-- Nav Item - Alerts -->
                             <li class="nav-item dropdown no-arrow mx-1">
                                 <a id="dropdown-notif-nav" class="nav-link dropdown-toggle" href="#" role="button"
@@ -398,8 +432,6 @@
 
                                     }
                                 </script>
-
-
 
                                 <!-- Dropdown - Alerts -->
                                 <div id="dropdown-notif"
@@ -452,19 +484,12 @@
 
                     </nav>
                     <!-- End of Topbar -->
-
-
                     <!-- Begin Page Content -->
                     <div class="container-fluid">
-
-
-
                         <!-- Page Heading -->
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
                             <h1 class="h4 mb-0 text-gray-800">Detalle de Reservación</h1>
-
                         </div>
-
 
                         <div class="d-sm-flex mb-4">
                             <a class="h6 mb-0 text-gray-800" href="dashboard.php"><i class="fas faw fa-home"></i></a>
@@ -474,70 +499,215 @@
                             <a class="h6 mb-0 text-primary active">Detalle de Reservación</a>
                         </div>
 
-                        <form>
-                            <div class="form-row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="validationDefault01">Código de reservación</label>
-                                    <input type="text" class="form-control" id="validationDefault01"
-                                        value="<?php echo $rowSel["id_reservation"]; ?>" disabled>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="validationDefault02">Nombre del Cliene</label>
-                                    <input type="text" class="form-control" id="validationDefault02"
-                                        value="<?php echo $rowSel["firstname_customer"].", ". $rowSel["lastname_customer"]; ?>"
-                                        disabled>
-                                </div>
-                                <div class="col-md-2 mb-3">
-                                    <label for="validationDefault06">Número de Celular</label>
-                                    <input type="text" class="form-control" id="validationDefault06"
-                                        value="<?php echo $rowSel["phone_customer"]; ?>" disabled>
+                        <div class="top-content">
+
+                            <!-- CAROUSEL CARD INFORMATION ONLY LG -->
+                            <div class="d-none d-md-none d-sm-none d-lg-block d-xl-block">
+                                <div id="recipeCarousel" class="carousel slide carousel-fade w-100" data-ride="carousel"
+                                    data-interval="0">
+                                    <div class="carousel-inner w-100" role="listbox">
+                                        <div class="carousel-item row active">
+                                            <div class="col-4 float-left">
+                                                <div class="card mb-3 pt-4 pl-3 pb-3 pr-3">
+
+                                                    <div class="media">
+                                                        <a href="#">
+                                                            <img src="<?php echo $rowSel['photo_customer']; ?>"
+                                                                class="card-img align-self-center rounded-circle mr-3 align-content-center"
+                                                                style="width:85px; height:85px;" alt="...">
+                                                        </a>
+                                                        <div class="media-body text-left">
+                                                            <small class="card-text text-muted">Cliente:</small>
+                                                            <h5 class="card-title is-text-black font-weight-bold ">
+                                                                <?php echo $rowSel["firstname_customer"]." ". $rowSel["lastname_customer"]; ?>
+                                                            </h5>
+                                                            <small class="card-text text-muted">Celular:</small>
+                                                            <h5 class=" is-text-black">
+                                                                <?php echo $rowSel["phone_customer"]; ?>
+                                                            </h5>
+                                                            <small class="card-text text-muted">Correo
+                                                                electrónico:</small>
+                                                            <h5 class=" is-text-black">
+                                                                <?php echo $rowSel["email_customer"]; ?>
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 float-left">
+                                                <div class="card mb-3 pt-4 pl-3 pb-3 pr-3">
+                                                    <p class="text-secondary card-title">Detalles de la reservación</p>
+                                                    <small class="card-text text-muted text-left">Código de
+                                                        reservación:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["id_reservation"]; ?>
+                                                    </h6>
+
+                                                    <small class="card-text text-muted text-left">Fecha y Hora de
+                                                        reservación</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["date_reservation"]. ' / '.$rowSel["time_reservation"]; ?>
+                                                    </h6>
+                                                    <small class="card-text text-muted text-left">Hora de recojo</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["timecollect_reservation"]; ?>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 float-left">
+                                                <div class="card mb-3 pt-4 pl-3 pb-3 pr-3">
+                                                    <p class="text-secondary card-title">Detalles de pago</p>
+                                                    <small class="card-text text-muted text-left">Tipo de pago:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["name_typepay"]; ?>
+                                                    </h6>
+                                                    <small class="card-text text-muted text-left">Totalidad de
+                                                        items:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["quantity_detres"]; ?>
+                                                    </h6>
+                                                    <small class="card-text text-muted text-left">Monto total:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["gtotal_detres"]; ?>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item row no-gutters">
+                                            <div class="col-4 float-left">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <a class="carousel-control-prev" href="#recipeCarousel" role="button"
+                                        data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true">
+                                        </span>
+                                        <span class="sr-only">Anterior</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#recipeCarousel" role="button"
+                                        data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true">
+                                        </span>
+                                        <span class="sr-only">Siguiente</span>
+                                    </a>
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="validationDefault07">Linea de tiempo</label>
-                                    <input type="text" class="form-control"
-                                        value="<?php echo $rowSel["name_timelinereserv"]; ?>" id="validationDefault07"
-                                        disabled>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="validationDefault03">Totalidad de productos</label>
-                                    <input type="text" class="form-control"
-                                        value="<?php echo $rowSel["quantity_detres"]; ?>" id="validationDefault03"
-                                        disabled>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="validationDefault04">Fecha y Hora de reservación</label>
-                                    <input type="text" class="form-control" id="validationDefault04"
-                                        value="<?php echo $rowSel["date_reservation"]. ' / '.$rowSel["time_reservation"]; ?>"
-                                        disabled>
+                            <!-- CAROUSEL CARD INFORMATION ONLY MD SM -->
+                            <div class=" d-none d-md-block d-sm-block d-lg-none d-block">
+                                <div id="recipeCarousel" class="carousel slide carousel-fade" data-ride="carousel"
+                                    data-interval="0">
+                                    <div class="carousel-inner" role="">
+                                        <div class="carousel-item  active">
+                                            <div class="">
+                                                <div class="card mb-2 pt-2 pl-2 pb-2 pr-2">
+                                                    <div class="media">
+                                                        <a href="#">
+                                                            <img src="<?php echo $rowSel['photo_customer']; ?>"
+                                                                class="card-img align-self-center rounded-circle mr-3 align-content-center"
+                                                                style="width:85px; height:85px;" alt="...">
+                                                        </a>
+                                                        <div class="media-body text-left">
+                                                            <small class="card-text text-muted">Cliente:</small>
+                                                            <h5 class="card-title is-text-black font-weight-bold ">
+                                                                <?php echo $rowSel["firstname_customer"]." ". $rowSel["lastname_customer"]; ?>
+                                                            </h5>
+                                                            <small class="card-text text-muted">Celular:</small>
+                                                            <h5 class=" is-text-black">
+                                                                <?php echo $rowSel["phone_customer"]; ?>
+                                                            </h5>
+                                                            <small class="card-text text-muted">Correo
+                                                                electrónico:</small>
+                                                            <h5 class=" is-text-black">
+                                                                <?php echo $rowSel["email_customer"]; ?>
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                        </div>
+                                        <div class="carousel-item  no-gutters">
+                                            <div class="">
+                                                <div class="card mb-2 pt-2 pl-2 pb-2 pr-2">
+                                                    <p class="text-secondary card-title">Detalles de la reservación</p>
+                                                    <small class="card-text text-muted text-left">Código de
+                                                        reservación:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["id_reservation"]; ?>
+                                                    </h6>
 
+                                                    <small class="card-text text-muted text-left">Fecha y Hora de
+                                                        reservación</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["date_reservation"]. ' / '.$rowSel["time_reservation"]; ?>
+                                                    </h6>
+                                                    <small class="card-text text-muted text-left">Hora de recojo</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["timecollect_reservation"]; ?>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item  no-gutters">
+                                            <div class="">
+                                                <div class="card mb-2 pt-2 pl-2 pb-2 pr-2">
+                                                    <p class="text-secondary card-title">Detalles de pago</p>
+                                                    <small class="card-text text-muted text-left">Tipo de pago:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["name_typepay"]; ?>
+                                                    </h6>
+                                                    <small class="card-text text-muted text-left">Totalidad de
+                                                        items:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["quantity_detres"]; ?>
+                                                    </h6>
+                                                    <small class="card-text text-muted text-left">Monto total:</small>
+                                                    <h6 class=" is-text-black text-left">
+                                                        <?php echo $rowSel["gtotal_detres"]; ?>
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item  no-gutters">
+                                            <div class="">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <a class="carousel-control-prev" href="#recipeCarousel" role="button"
+                                        data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true">
+                                        </span>
+                                        <span class="sr-only">Anterior</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#recipeCarousel" role="button"
+                                        data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true">
+                                        </span>
+                                        <span class="sr-only">Siguiente</span>
+                                    </a>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="validationDefault05">Hora de recojo</label>
-                                    <input type="text" class="form-control" id="validationDefault05"
-                                        value="<?php echo $rowSel["timecollect_reservation"]; ?>" disabled>
+                            </div>
+                            <!-- TIMELINE STATE RESERVATION -->
+                            <div class="card mb-4 card-hover-style">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="page-header">
+                                                <h4 class="is-text-black">Linea de tiempo</h4>
+                                            </div>
+                                            <div id="retrieve-timeline">
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="form-row align-content-between align-self-center" id="gr-buttons">
-                                <div class=" mb-1 col-md-2"></div>
-                                <a class="btn btn-danger card-hover-style mb-4 col-md-3 text-light" data-toggle="modal"
-                                    id="btn-con" data-target="#NegativeModal">
-                                    <i class="fas faw fa-trash"></i>&nbsp;&nbsp; Rechazar reservación
-                                </a>
-                                <div class=" mb-1 col-md-2"></div>
-                                <a class="btn btn-success card-hover-style col-md-3 mb-4 text-light" data-toggle="modal"
-                                    id="btn-con" data-target="#PositiveModal"><i
-                                        class="fas faw fa-check"></i>&nbsp;&nbsp;Confirmar reservación</a>
-                                <div class=" mb-1 col-md-2"></div>
-                            </div>
-
-
-                        </form>
-
-                        <?php
+                            <?php
 
                         $sql2="SELECT r.id_reservation, dr.id_detres, dr.target_detres
                             FROM reservation r 
@@ -567,36 +737,36 @@
                         $result_prod=mysqli_query($conn, $sql_prod);
                         ?>
 
-                        <!-- DataTale -->
-                        <div class="card  mb-2 card-hover-style">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered " class="display" id="dataTable" width="100%"
-                                        cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">Opciones</th>
-                                                <th>Código Item</th>
-                                                <th>Nombre Item</th>
-                                                <th class="text-center">Cantidad</th>
-                                                <th class="text-center">Precio</th>
-                                                <th class="text-center">Total</th>
-                                                <th class="text-center">Estado</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th class="text-center">Opciones</th>
-                                                <th>Código Item</th>
-                                                <th>Nombre Item</th>
-                                                <th class="text-center">Cantidad</th>
-                                                <th class="text-center">Precio</th>
-                                                <th class="text-center">Total</th>
-                                                <th class="text-center">Estado</th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            <?php
+                            <!-- DataTale -->
+                            <div class="card  mb-2 card-hover-style">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered " class="display" id="dataTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">Opciones</th>
+                                                    <th>Código Item</th>
+                                                    <th>Nombre Item</th>
+                                                    <th class="text-center">Cantidad</th>
+                                                    <th class="text-center">Precio</th>
+                                                    <th class="text-center">Total</th>
+                                                    <th class="text-center">Estado</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th class="text-center">Opciones</th>
+                                                    <th>Código Item</th>
+                                                    <th>Nombre Item</th>
+                                                    <th class="text-center">Cantidad</th>
+                                                    <th class="text-center">Precio</th>
+                                                    <th class="text-center">Total</th>
+                                                    <th class="text-center">Estado</th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                                <?php
                                             
                                             while ($row = mysqli_fetch_array($result)) {
                                                 $target_res = $row['target_detres'];
@@ -606,257 +776,264 @@
                                                     while ($row_menu = mysqli_fetch_array($result_menu)) {
                                                         ?>
 
-                                                        <tr>
-                                                            <td class="align-content-center text-center align-align-self-center small"
-                                                                width="10%">
-                                                                <i class="icon-hover-blue fas faw fa-eye" type="button"
-                                                                    style="border-radius: 9px; padding: 9px;"
-                                                                    title="Mostrar detalles del Menu"
-                                                                    onclick='getDetail("<?php echo $row_menu["id_menu"]; ?>","<?php echo $row["target_detres"]; ?>")'>&nbsp;Mostrar</i>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_menu["id_menu"] ?>
-                                                            </td>
-                                                            <td class="small is-text-black">
-                                                                <img class="img-fluid" src="<?php echo $row_menu['image_menu']; ?>"
-                                                                    width="55" height="50" />    
-                                                                &nbsp;<?php echo $row_menu["name_menu"]?>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_menu["quantity_detres"]?>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_menu["price_detres"]?>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_menu["total_detres"]?>
-                                                            </td>
-                                                            <td class="small text-center"><?php echo "" ?>
-                                                            </td>
-                                                        </tr>
-                                            <?php
+                                                <tr>
+                                                    <td class="align-content-center text-center align-align-self-center small"
+                                                        width="10%">
+                                                        <i class="icon-hover-blue fas faw fa-eye" type="button"
+                                                            style="border-radius: 9px; padding: 9px;"
+                                                            title="Mostrar detalles del Menu"
+                                                            onclick='getDetail("<?php echo $row_menu["id_menu"]; ?>","<?php echo $row["target_detres"]; ?>")'>&nbsp;Mostrar</i>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_menu["id_menu"] ?>
+                                                    </td>
+                                                    <td class="is-text-black">
+                                                        <img class="img-fluid"
+                                                            src="<?php echo $row_menu['image_menu']; ?>" width="55"
+                                                            height="50" />
+                                                        &nbsp;<?php echo $row_menu["name_menu"]?>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_menu["quantity_detres"]?>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_menu["price_detres"]?>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_menu["total_detres"]?>
+                                                    </td>
+                                                    <td class="text-center"><?php echo "" ?>
+                                                    </td>
+                                                </tr>
+                                                <?php
                                                     }
                                                 } elseif ($target_res == '2') {
                                                     
                                                     while ($row_prod = mysqli_fetch_array($result_prod)) {
 
                                                         ?>
-                                                        <tr>
-                                                            <td class="align-content-center text-center align-align-self-center small"
-                                                                width="10%">
-                                                                <i class="icon-hover-blue fas faw fa-eye" type="button"
-                                                                    style="border-radius: 9px; padding: 9px;"
-                                                                    title="Mostrar detalles del Menu"
-                                                                    onclick='getDetail("<?php echo $row_prod["id_product"]; ?>","<?php echo $row["target_detres"]; ?>")'>&nbsp;Mostrar</i>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_prod["id_product"] ?>
-                                                            </td>
-                                                            <td class="small is-text-black">
-                                                                <img class="img-fluid" src="<?php echo $row_prod['image_product']; ?>"
-                                                                    width="55" height="50" />
-                                                                &nbsp;<?php echo $row_prod["name_product"]?>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_prod["quantity_detres"]?>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_prod["price_detres"]?>
-                                                            </td>
-                                                            <td class="small text-center" width="10%">
-                                                                <?php echo $row_prod["total_detres"]?>
-                                                            </td>
-                                                            <td class="small text-center"><?php echo "" ?>
-                                                            </td>
-                                                        </tr>
-                                            <?php
+                                                <tr>
+                                                    <td class="align-content-center text-center align-align-self-center small"
+                                                        width="10%">
+                                                        <i class="icon-hover-blue fas faw fa-eye" type="button"
+                                                            style="border-radius: 9px; padding: 9px;"
+                                                            title="Mostrar detalles del Menu"
+                                                            onclick='getDetail("<?php echo $row_prod["id_product"]; ?>","<?php echo $row["target_detres"]; ?>")'>&nbsp;Mostrar</i>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_prod["id_product"] ?>
+                                                    </td>
+                                                    <td class="is-text-black">
+                                                        <img class="img-fluid"
+                                                            src="<?php echo $row_prod['image_product']; ?>" width="55"
+                                                            height="50" />
+                                                        &nbsp;<?php echo $row_prod["name_product"]?>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_prod["quantity_detres"]?>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_prod["price_detres"]?>
+                                                    </td>
+                                                    <td class="text-center" width="10%">
+                                                        <?php echo $row_prod["total_detres"]?>
+                                                    </td>
+                                                    <td class="text-center"><?php echo "" ?>
+                                                    </td>
+                                                </tr>
+                                                <?php
                                                     }
                                                 }
                                             } ?>
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- /.container-fluid -->
+
                     </div>
-                    <!-- /.container-fluid -->
+                    <!-- End of Main Content -->
+
+                    <!-- Footer -->
+                    <footer class="sticky-footer bg-white">
+                        <div class="container my-auto">
+                            <div class="copyright text-center my-auto">
+                                <span>Developed with &nbsp;<i class="fas fa-heart fa-sm fa-fw mr-2 text-danger"></i>by
+                                    Beginners</span>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- End of Footer -->
+
+
 
                 </div>
-                <!-- End of Main Content -->
+                <!-- End of Content Wrapper -->
 
-                <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Developed with &nbsp;<i class="fas fa-heart fa-sm fa-fw mr-2 text-danger"></i>by
-                                Beginners</span>
+
+            </div>
+            <!-- End of Page Wrapper -->
+
+
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+
+            <!-- Logout Modal-->
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">¿Desea cerrar la Sesión actual?</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-info" type=" button" data-dismiss="modal">Cancelar</button>
+                            <a class="btn btn-danger" type="submit" name="submit_logout" href="logout_user.php">Cerrar
+                                Sesión</a>
                         </div>
                     </div>
-                </footer>
-                <!-- End of Footer -->
-
-
-
+                </div>
             </div>
-            <!-- End of Content Wrapper -->
 
-
-        </div>
-        <!-- End of Page Wrapper -->
-
-
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">¿Desea cerrar la Sesión actual?</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-info" type=" button" data-dismiss="modal">Cancelar</button>
-                        <a class="btn btn-danger" type="submit" name="submit_logout" href="logout_user.php">Cerrar
-                            Sesión</a>
+            <!-- Confirmo Modal-->
+            <div class="modal fade" id="PositiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>¿Desea confirmar la reservación?</h6>
+                            <!--<label for="exampleFormControlTextarea1">Example textarea</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        placeholder=-->
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
+                            <input type="button" class="btn btn-success" href="#"
+                                onclick=' reservationConfirmed("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
+                                value="Confirmar">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Confirmo Modal-->
-        <div class="modal fade" id="PositiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">¿Desea confirmar la reservación?</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
-                        <input type="button" class="btn btn-success" href="#"
-                            onclick=' reservationConfirmed("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
-                            value="Confirmar">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Rechazo Modal-->
-        <div class="modal fade" id="NegativeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">¿Desea rechazar la reservación del cliente?</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
-                        <input type="button" class="btn btn-success" href="#"
-                            onclick=' reservationRechazed("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
-                            value="Confirmar">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="dataModala" style="opacity: 1; background : rgba(7, 7, 7, 0.219);" tabindex="-1"
-            role="dialog " aria-labelledby="ModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl" style="border-radius: 10px; border: none;">
-                <div class="modal-content" style="border-radius: 10px; border: none;">
-                    <div class="modal-header">
-                        <Span class="modal-title h5 font-weight-bold"  id="ModalNotifLabel">
-                            <i class="fas faw fa-info-circle text-primary"></i>&nbsp;&nbsp;Información</span>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body " id="item_detail">
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary card-hover-style" data-dismiss="modal">Cerrar</button>
+            <!-- Rechazo Modal-->
+            <div class="modal fade" id="NegativeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">¿Desea rechazar la reservación del cliente?</div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
+                            <input type="button" class="btn btn-success" href="#"
+                                onclick=' reservationRechazed("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
+                                value="Confirmar">
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Modal -->
+            <div class="modal fade" id="dataModala" style="opacity: 1; background : rgba(7, 7, 7, 0.219);" tabindex="-1"
+                role="dialog " aria-labelledby="ModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" style="border-radius: 10px; border: none;">
+                    <div class="modal-content" style="border-radius: 10px; border: none;">
+                        <div class="modal-header">
+                            <Span class="modal-title h5 font-weight-bold" id="ModalNotifLabel">
+                                <i class="fas faw fa-info-circle text-primary"></i>&nbsp;&nbsp;Información</span>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body " id="item_detail">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary card-hover-style"
+                                data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
 
-            <script>
-                function getDetail(id, target) {
-                    if(target == "2"){
-                        jQuery.ajax({
-                            url: 'apiManagePanel/layout_detail_prod_modal.php',
-                            method: "POST",
-                            data: {
-                                id_prod: id
-                            },
-                            success: function (data) {
-                                $('#item_detail').html(data);
-                                $('#dataModala').modal('show');
-                            }
-                        });
-                    }else if (target == "1") {
-                        jQuery.ajax({
-                            url: 'apiManagePanel/layout_detail_menu_modal.php',
-                            method: "POST",
-                            data: {
-                                id_menu: id
-                            },
-                            success: function (data) {
-                                $('#item_detail').html(data);
-                                $('#dataModala').modal('show');
-                            }
-                        });
+                <script>
+                    function getDetail(id, target) {
+                        if (target == "2") {
+                            jQuery.ajax({
+                                url: 'apiManagePanel/layout_detail_prod_modal.php',
+                                method: "POST",
+                                data: {
+                                    id_prod: id
+                                },
+                                success: function (data) {
+                                    $('#item_detail').html(data);
+                                    $('#dataModala').modal('show');
+                                }
+                            });
+                        } else if (target == "1") {
+                            jQuery.ajax({
+                                url: 'apiManagePanel/layout_detail_menu_modal.php',
+                                method: "POST",
+                                data: {
+                                    id_menu: id
+                                },
+                                success: function (data) {
+                                    $('#item_detail').html(data);
+                                    $('#dataModala').modal('show');
+                                }
+                            });
+                        }
                     }
-                    
+                </script>
+            </div>
 
-                }
+
+            <!-- Bootstrap core JavaScript-->
+            <script src="vendor/jquery/jquery.min.js"></script>
+            <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+            <!-- Core plugin JavaScript-->
+            <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+            <!-- Custom scripts for all pages-->
+            <script src="js/sb-admin-2.min.js"></script>
+
+            <!-- Page level plugins -->
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js">
             </script>
-        </div>
+            <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
+            <!-- Page level custom scripts -->
+            <script src="js/demo/datatables-demo.js"></script>
+            <script src="js/methods_reservation.js"></script>
 
-        <!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="js/sb-admin-2.min.js"></script>
-
-        <!-- Page level plugins -->
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-        <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-        <!-- Page level custom scripts -->
-        <script src="js/demo/datatables-demo.js"></script>
-        <script src="js/methods_reservation.js"></script>
-
-        <!-- ALERTIFY -->
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.rtl.min.css" />
-        <!-- Default theme -->
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.rtl.min.css" />
-        <!-- Semantic UI theme -->
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.rtl.min.css" />
-        <!-- Bootstrap theme -->
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.rtl.min.css" />
+            <!-- ALERTIFY -->
+            <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.rtl.min.css" />
+            <!-- Default theme -->
+            <link rel="stylesheet"
+                href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.rtl.min.css" />
+            <!-- Semantic UI theme -->
+            <link rel="stylesheet"
+                href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.rtl.min.css" />
+            <!-- Bootstrap theme -->
+            <link rel="stylesheet"
+                href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.rtl.min.css" />
     </body>
     <?php
       }
