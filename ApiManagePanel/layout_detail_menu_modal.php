@@ -64,3 +64,4 @@
         }
     print $response;
     }
+    mysqli_close($conn);

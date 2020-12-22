@@ -20,11 +20,13 @@
 
         <link rel="shortcut icon" href="assets/image/goyan-logo.png" type="image/png">
 
+        <!-- Custom fonts for this template -->
         <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
         <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
 
+        <link rel="stylesheet" href="css/style_notification.css">
         <link rel="stylesheet" href="css/style_global.css">
         <!-- Custom styles for this template -->
         <link href="css/sb-admin-2.css" rel="stylesheet">
@@ -42,15 +44,16 @@
         <!-- Semantic UI theme -->
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
         <!-- Bootstrap theme -->
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
 
     </head>
 
     <body id="page-top">
 
         <script type="text/javascript">
-            function refresh_reserv_pending() {
+            /*function refresh_notif_pending() {
                 jQuery.ajax({
-                    url: 'apiManagePanel/query_count_wait_reservations.php',
+                    url: 'apiManagePanel/get_count_reservation.php',
                     type: 'POST',
                     success: function (results) {
                         jQuery(".query_notpend").html(results);
@@ -58,27 +61,16 @@
                 });
             }
 
-            function refresh_reserv_complete() {
+            /*function refresh_notif_date() {
                 jQuery.ajax({
-                    url: 'apiManagePanel/query_count_complete_reservations.php',
+                    url: 'apiManagePanel/query_count_bydate_notifications.php',
                     type: 'POST',
 
                     success: function (results) {
-                        jQuery(".query_complete").html(results);
+                        jQuery(".query_bydate").html(results);
                     }
                 });
-            }
-
-            function refresh_reserv_total() {
-                jQuery.ajax({
-                    url: 'apiManagePanel/query_count_total_reservations.php',
-                    type: 'POST',
-
-                    success: function (results) {
-                        jQuery(".query_total").html(results);
-                    }
-                });
-            }
+            }*/
 
             function refresh_count_notif() {
 
@@ -91,10 +83,9 @@
                 });
             }
 
-            tnotif = setInterval(refresh_count_notif, 10000);/*
-            tp = setInterval(refresh_reserv_pending, 1000);
-            tall = setInterval(refresh_reserv_complete, 1000);
-            tt = setInterval(refresh_reserv_total, 1000);*/
+            tnotif = setInterval(refresh_count_notif, 10000);
+            //tp = setInterval(refresh_notif_pending, 1000);
+            //tall = setInterval(refresh_notif_date, 1000);
         </script>
 
         <!-- Page Wrapper -->
@@ -104,8 +95,7 @@
             <ul class="navbar-nav bg-white sidebar sidebar-light accordion " id="accordionSidebar">
 
                 <!-- Sidebar - Brand -->
-                <a class="sidebar-brand text-center d-flex align-items-center mt-3 mb-3 justify-content-center"
-                    href="dashboard.php">
+                <a class="sidebar-brand text-center d-flex align-items-center mt-3 mb-3 justify-content-center" href="dashboard.php">
 
                     <img src="assets/image/goyan-logo.png" alt="Logo goyan" class="img-fluid sidebar-brand-icon"
                         width="60%">&nbsp;
@@ -130,14 +120,14 @@
                     Pendiente
                 </div>
 
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link " href="notification.php">
                         <i class="fas fa-fw fa-bell"></i>
                         <span>Notificaciones</span>
                     </a>
                 </li>
 
-                <li class="nav-item active">
+                <li class="nav-item ">
                     <a class="nav-link " href="reservation.php">
                         <i class="fas fa-fw fa-bolt"></i>
                         <span>Panel de reservas</span>
@@ -167,7 +157,7 @@
                     </div>
                 </li>
                 <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item ">
+                <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProv"
                         aria-expanded="true" aria-controls="collapseTwo">
                         <i class="fas fa-fw fa-cheese"></i>
@@ -177,7 +167,7 @@
                         data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
                             <h6 class="collapse-header">Opciones:</h6>
-                            <a class="collapse-item " href="menus.php">Mostrar todos</a>
+                            <a class="collapse-item" href="menus.php">Mostrar todos</a>
                             <!--<a class="collapse-item" href="">Gráficos</a>
                             <a class="collapse-item" href="">Buscar y filtrar</a>
                             <a class="collapse-item" href="">Observaciones</a>-->
@@ -349,9 +339,6 @@
 
                                     }
                                 </script>
-
-
-
                                 <!-- Dropdown - Alerts -->
                                 <div id="dropdown-notif"
                                     class="dropdown-list  dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -359,7 +346,6 @@
                                     <h6 class="dropdown-header">
                                         Notificaciones
                                     </h6>
-
                                     <div id="notification-latest"></div>
 
                                     <a class="dropdown-item text-center small text-gray-500"
@@ -410,71 +396,44 @@
 
                         <!-- Page Heading -->
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                            <h1 class="h3 mb-0 text-gray-800">Panel de Reservaciones</h1>
+                            <h1 class="h3 mb-0 text-gray-800">Panel de Notificaciones</h1>
                         </div>
 
                         <!-- Content CARDS ACCESS -->
                         <div class="row">
 
                             <!-- Card de resumen de total de productos -->
-                            <div class="col-xl-4 col-md-4 mb-2">
-                                <div class="card card-hover-style border-left-info  h-100">
+                            <div class="col-xl-4 col-md-4 mb-4 d-none">
+                                <div class="card card-hover-style border-left-primary  h-100 py-2">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                    Reservaciones en espera</div>
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                    Notificaciones pendientes</div>
                                                 <div class="h6 mb-0 text-gray-800 query_notpend">
                                                 </div>
-
                                             </div>
                                             <div class="col-auto">
-                                                <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                                                <i class="fas fa-exclamation-circle fa-2x text-gray-300"></i>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a href="reservation-wait.php" class="text-info">Mostrar mas detalles</a>
-                                        <i class="fas faw fa-arrow-alt-circle-right ml-2 text-info"></i>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- card de resumen de la cantidad de productos sin stock -->
-                            <div class="col-xl-4 col-md-4 mb-2">
-                                <div class="card card-hover-style border-left-warning h-100">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                    Reservaciones atendidas Hoy</div>
-                                                <div class="h6 mb-0 text-gray-800 query_complete">
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="fas fa-dolly fa-2x text-gray-300"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer">
-                                        <a href="reservation-completed.php" class="text-warning"
-                                            style="text-decoration: none;">Mostrar mas detalles</a>
-                                        <i class="fas faw fa-arrow-alt-circle-right ml-2" style="color: #F7C649"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-md-4 mb-2">
-                                <div class="card card-hover-style border-left-success h-100">
+                            <div class="col-xl-4 col-md-4 mb-4">
+                                <div class="card card-hover-style border-left-success h-100 py-2">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                    Total de reservaciones de hoy</div>
-                                                <div class="h6 mb-0 text-gray-800 query_total">
+                                                    Notificaciones de hoy </div>
+                                                <div class="h6 mb-0 text-gray-800 query_bydate">
                                                 </div>
                                             </div>
                                             <div class="col-auto">
-                                                <i class="fas fa-shopping-bag fa-2x text-gray-300"></i>
+                                                <i class="fas fa-envelope-open-text fa-2x text-gray-300"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -483,104 +442,95 @@
 
                         </div>
 
-                        <nav class="mt-4 d-none">
-                            <div class="nav nav-tabs " id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active col-xl-4 col-md-4 card-hover-style"
-                                    id="nav-pending-tab" data-toggle="tab" href="#nav-pending" role="tab"
-                                    aria-controls="nav-pending" aria-selected="true">Reservaciones Pendientes</a>
-                                <a class="nav-item nav-link col-xl-4 col-md-4 card-hover-style" id="nav-complete-tab"
-                                    data-toggle="tab" href="#nav-complete" role="tab" aria-controls="nav-complete"
-                                    aria-selected="false">Reservaciones Finalizadas</a>
-                                <a class="nav-item nav-link col-xl-4 col-md-4 card-hover-style" id="nav-general-tab"
-                                    data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-general"
-                                    aria-selected="false">General</a>
-                            </div>
-                        </nav>
-                        <div class="tab-content d-none" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-pending" role="tabpanel"
-                                aria-labelledby="nav-pending-tab">
-                                <!-- Content Row -->
-                            </div>
-                        </div>
-
-                        <?php
-                        
-                        $sql2="SELECT r.id_reservation, r.date_reservation, r.time_reservation, r.grandtotal_reservation,
-                            r.state_reservation, r.timecollect_reservation, tl.id_timelinereserv, tl.name_timelinereserv,
-                            (SELECT c.firstname_customer FROM customer c WHERE r.id_customer = c.id_customer) As firstname,
-                            (SELECT c.lastname_customer FROM customer c WHERE r.id_customer = c.id_customer) As lastname,
-                            (SELECT SUM(dr.quantity_detres) FROM detail_reservation dr WHERE dr.id_reservation = r.id_reservation) As quantity_detres
-                            FROM reservation r
-                            INNER JOIN timeline_reservation tl ON tl.id_timelinereserv = r.id_timelinereserv
-                            ORDER BY `r`.`date_reservation` DESC, r.time_reservation DESC";
-                        $result=mysqli_query($conn, $sql2);
+                        <!-- Content Row -->
+                        <?php              
+                            $result=$con->query("SELECT n.id_notifications, n.id_reservation, 
+                                c.id_customer, c.firstname_customer, c.lastname_customer, r.time_reservation,
+                                d.detail_detnotif,  r.date_reservation, r.time_reservation, r.state_reservation, d.destination_detnotif,
+                                r.id_timelinereserv,
+                                (SELECT tl.name_timelinereserv FROM timeline_reservation tl WHERE tl.id_timelinereserv = r.id_timelinereserv) As name_timelinereserv
+                                FROM notifications n
+                                INNER JOIN detail_notifications d ON d.id_detnotifications  = n.id_notifications 
+                                INNER JOIN customer c ON c.id_customer = n.id_customer
+                                INNER JOIN reservation r ON r.id_reservation = n.id_reservation
+                                WHERE d.destination_detnotif= 'system'
+                                ORDER BY r.date_reservation DESC");
                         ?>
-                        <!-- DataTale -->
-                        <div class="card  mb-2 card-hover-style" id="test">
-
-                            <div class="card-body ">
+                        <!-- DataTales Example -->
+                        <div class="card card-hover-style mb-4">
+                            <div class="card-header py-3">
+                                <span class="m-0 font-weight-bold text-primary" style="float: left;">Lista de
+                                    Notificaciones</span>
+                                <span class=" font-weight-bold text-primary  p-1 icon-icon-hover-yellow"
+                                    style="float: right; cursor: pointer;" onclick="refreshPage()">
+                                    <i class="fa-sync fa-w fas"></i>
+                                    Refrescar
+                                </span>
+                            </div>
+                            <?php
+              if ($result->num_rows > 0) {
+                  ?>
+                            <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered " id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">Opciones</th>
-                                                <th>Código Reserva</th>
-                                                <th class="text-center">Cliente</th>
-                                                <th class="text-center">Nro. Items</th>
-                                                <th class="text-center">Monto Total</th>
-                                                <th class="text-center">Hora de recojo</th>
+                                                <th class="text-center">Código Reservación</th>
+                                                <th class="text-center">Fecha Solicitud</th>
                                                 <th class="text-center">Estado</th>
+
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
                                                 <th class="text-center">Opciones</th>
-                                                <th>Código Reserva</th>
-                                                <th class="text-center">Cliente</th>
-                                                <th class="text-center">Nro. Items</th>
-                                                <th class="text-center">Monto Total</th>
-                                                <th class="text-center">Hora de recojo</th>
+                                                <th class="text-center">Código Reservación</th>
+                                                <th class="text-center">Hota solicitud</th>
                                                 <th class="text-center">Estado</th>
                                             </tr>
                                         </tfoot>
+
                                         <tbody>
                                             <?php
-                                                while ($row = mysqli_fetch_array($result)) {
-                                                        $state = $row['name_timelinereserv'];
-                                            ?>
-                                                <tr>
-                                                    <td class="small align-content-center align-self-center text-center"
-                                                        width=10%>
-                                                        <a
-                                                            href="reservation-detail.php?cdg=<?php echo $row["id_reservation"]; ?>">
-                                                            <i class=" fas faw fa-eye mt-2 card-hover-style"
-                                                                style="border-radius: 13px; padding: 10px;"
-                                                                title="ver detalles" type="button">
-                                                            </i>
-                                                        </a>
-                                                    </td>
-                                                    <td class="small is-text-black "><?php echo  $row["id_reservation"]; ?>
-                                                    </td>
-                                                    <td class=" is-text-black"><?php echo  $row["firstname"]; ?>,
-                                                        <?php echo $row["lastname"]; ?>
-                                                    </td>
-                                                    <td class=" text-center" width=10%>
-                                                        <?php echo $row["quantity_detres"]; ?></td>
-                                                    <td class=" text-center" width=10%>S/. <?php echo $row["grandtotal_reservation"]; ?>
-                                                    </td>
-                                                    <td class=" text-center" width=10%>
-                                                        <?php echo $row["timecollect_reservation"]; ?>
-                                                    </td>
-                                                    <td class=" text-center font-weight-bold is-text-black"><?php echo $state ?>
-                                                    </td>
-                                                </tr>
+                                            while ($row = $result->fetch_array()) {
+                                                $state = $row['name_timelinereserv'];
+                                                 ?>
+                                            <tr>
+                                                <td class="align-content-center text-center align-self-center"
+                                                    width=10%>
+                                                    <i class="icon-hover-yellow fas faw fa-eye" type="button"
+                                                        style="border-radius: 13px; padding: 5px;" title="ver detalles"
+                                                        onclick="getDetail( <?php echo $row['id_notifications'] ?> )"></i>
+                                                </td>
+                                                <td>
+                                                    <center class="small"><?php echo $row['id_reservation']; ?>
+                                                    </center>
+                                                </td>
+
+                                                <td class="small text-center"><?php echo $row["date_reservation"]. " / ". $row["time_reservation"];?>
+                                                </td>
+
+                                                <td class=" text-center font-weight-bold is-text-black">
+                                                    <?php echo $state ?>
+                                                </td>
+                                            </tr>
                                             <?php
-                                                } ?>
+                                            } ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <?php
+              }else{ ?>
+                            <div>
+                                <h5 class="text-center text-black-50 mt-4 mb-4">
+                                    <i class=" fas fa-fw fa-times mr-2"></i>No se obtuvo datos &nbsp;<i
+                                        class="fas faw fa-frown-open"></i></h5>
+                            </div>
+                            <?php }?>
                         </div>
+
                     </div>
                     <!-- /.container-fluid -->
 
@@ -630,6 +580,50 @@
             </div>
         </div>
 
+
+        <!-- Modal -->
+        <div class="modal fade" id="dataModala" style="opacity: 1; background : rgba(7, 7, 7, 0.219);" tabindex="-1"
+            role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="border-radius: 15px; border: none;">
+                <div class="modal-content" style="border-radius: 15px; border: none;">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold"  id="ModalNotifLabel">
+                            <i class="fa fas fa-info text-primary"></i>&nbsp;
+                            Detalles de la notificación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body " id="notification_detail">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-success card-hover-style" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function getDetail(id) {
+                    jQuery.ajax({
+                        url: 'apiManagePanel/layout_detail_notif_modal.php',
+                        method: "POST",
+                        data: {
+                            id_notif: id
+                        },
+                        success: function (data) {
+                            $('#notification_detail').html(data);
+                            $('#dataModala').modal('show');
+                        },
+                        error: function (params) {
+                            $('#dataModala').modal('hide')
+                        }
+                    });
+
+                }
+            </script>
+        </div>
+
+
         <!-- Bootstrap core JavaScript-->
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -646,6 +640,8 @@
 
         <!-- Page level custom scripts -->
         <script src="js/demo/datatables-demo.js"></script>
+
+        <script src="js/methods_reservation.js"></script>
 
         <!-- ALERTIFY -->
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.rtl.min.css" />

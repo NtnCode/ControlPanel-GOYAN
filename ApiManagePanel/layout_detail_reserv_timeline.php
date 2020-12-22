@@ -40,14 +40,14 @@
                     </div>
                     <div class="form-row align-content-between align-self-center" id="gr-buttons">
                         <div class=" mb-1 col-md-2"></div>
-                        <a class="btn btn-danger card-hover-style mb-4 col-md-3 text-light" data-toggle="modal"
+                        <a class="align-content-between align-self-center btn btn-danger  card-hover-style mb-4 col-md-3 text-light" data-toggle="modal"
                             id="btn-conf" data-target="#NegativeModal">
-                            <i class="fas faw fa-trash"></i>&nbsp;&nbsp; Rechazar reservación
+                            <i class="fas faw fa-times-circle"></i>&nbsp; Rechazar
                         </a>
                         <div class=" mb-1 col-md-2"></div>
-                        <a class="btn btn-success card-hover-style col-md-3 mb-4 text-light" data-toggle="modal"
-                            id="btn-deny" data-target="#PositiveModal"><i
-                                class="fas faw fa-check"></i>&nbsp;&nbsp;Confirmar reservación</a>
+                        <a class="btn btn-success card-hover-style col-md-3 mb-4 text-light align-content-between align-self-center" data-toggle="modal"
+                            id="btn-deny" data-target="#ConfirmResModal"><i
+                                class="fas faw fa-check"></i>&nbsp; Confirmar</a>
                         <div class=" mb-1 col-md-2"></div>
                     </div>
                     <div class="form-row align-content-between align-self-center d-none" id="gr-refresh">
@@ -58,8 +58,6 @@
                         <div class=" mb-1 col-md-5"></div>
                     </div>
                     ';
-
-                    
                     
                 }elseif($state==2){
                     
@@ -92,8 +90,8 @@
                     </div>
                     <div class="form-row align-content-between align-self-center" id="gr-buttons">                        
                         <div class="mb-1 col-md-4"></div>
-                        <a class="btn btn-success card-hover-style col-md-4 mb-4 text-light" data-toggle="modal"
-                            id="btn-deny" data-target="#PositiveModal"><i
+                        <a class="btn btn-success card-hover-style col-md-4 mb-4 text-light align-content-between align-self-center" data-toggle="modal"
+                            id="btn-deny" data-target="#PreparationResModal"><i
                                 class="fas faw fa-check"></i>&nbsp;&nbsp;Poner en preparación</a>
                         <div class="mb-1 col-md-4"></div>
                     </div>
@@ -135,7 +133,7 @@
                             </li>
                         </ul>
                     </div>
-                    <h5 class="text-center font-weight-bold is-text-black">La reservación fue rechazado y ha sido notificado al cliente.</h5>
+                    <h5 class="text-center font-weight-bold is-text-black">La reservación fue rechazada y se notificó al cliente.</h5>
                     ';
 
                 }elseif($state==4){
@@ -160,7 +158,7 @@
                                 <div class="timeline-panel">
                                     <div class="timeline-heading">
                                         <h6 class="timeline-title">
-                                            Por confirmar
+                                            Confirmado
                                         </h6>
                                     </div>
                                 </div>
@@ -180,8 +178,8 @@
                     </div>
                     <div class="form-row align-content-between align-self-center" id="gr-buttons">                        
                         <div class="mb-1 col-md-4"></div>
-                        <a class="btn btn-success card-hover-style col-md-4 mb-4 text-light" data-toggle="modal"
-                            id="btn-deny" data-target="#PositiveModal"><i
+                        <a class="btn btn-success card-hover-style col-md-4 mb-4 text-light align-content-between align-self-center" data-toggle="modal"
+                            id="btn-deny" data-target="#CollectResModal"><i
                                 class="fas faw fa-check"></i>&nbsp;&nbsp; Terminar Preparación</a>
                         <div class="mb-1 col-md-4"></div>
                     </div>
@@ -216,7 +214,7 @@
                                 <div class="timeline-panel">
                                     <div class="timeline-heading">
                                         <h6 class="timeline-title">
-                                            Por confirmar
+                                            Confirmado
                                         </h6>
                                     </div>
                                 </div>
@@ -227,7 +225,7 @@
                                 <div class="timeline-panel">
                                     <div class="timeline-heading">
                                         <h6 class="timeline-title">
-                                            En preparación
+                                            Preparado
                                         </h6>
                                     </div>
                                 </div>
@@ -244,6 +242,20 @@
                                 </div>
                             </li>
                         </ul>
+                    </div>
+                    <div class="form-row align-content-between align-self-center" id="gr-buttons">                        
+                        <div class="mb-1 col-md-4"></div>
+                        <a class="btn btn-success card-hover-style col-md-4 mb-4 text-light align-content-between align-self-center" data-toggle="modal"
+                            id="btn-deny" data-target="#ReceivedResModal"><i
+                                class="fas faw fa-check"></i>&nbsp; Confirmar recepción</a>
+                        <div class="mb-1 col-md-4"></div>
+                    </div>
+                    <div class="form-row align-content-between align-self-center d-none" id="gr-refresh">
+                        <div class=" mb-1 col-md-5"></div>
+                        <input class="btn btn-info card-hover-style col-md-2 mb-4 text-light"
+                                    onclick="refreshPage()"
+                                    value="Refrescar estado">
+                        <div class=" mb-1 col-md-5"></div>
                     </div>
                     ';
 
@@ -269,7 +281,7 @@
                                 <div class="timeline-panel">
                                     <div class="timeline-heading">
                                         <h6 class="timeline-title">
-                                            Por confirmar
+                                            Confirmado
                                         </h6>
                                     </div>
                                 </div>
@@ -280,7 +292,7 @@
                                 <div class="timeline-panel">
                                     <div class="timeline-heading">
                                         <h6 class="timeline-title">
-                                            En preparación
+                                            Preparado
                                         </h6>
                                     </div>
                                 </div>
@@ -291,7 +303,7 @@
                                 <div class="timeline-panel">
                                     <div class="timeline-heading">
                                         <h6 class="timeline-title">
-                                            Por recojer
+                                            Recepcionado
                                         </h6>
                                     </div>
                                 </div>
@@ -317,3 +329,4 @@
         }
     print $response;
     }
+    mysqli_close($conn);

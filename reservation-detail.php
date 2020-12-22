@@ -9,12 +9,11 @@
           $cdg=$_GET['cdg'];
           $result=$con->query(
               "SELECT r.id_reservation, r.time_reservation, r.date_reservation, r.timecollect_reservation,
-                r.detail_reservation, r.state_reservation,
+                r.detail_reservation, r.state_reservation, r.grandtotal_reservation,
                 tl.id_timelinereserv, tl.name_timelinereserv, tl.description_timelinereserv,
                 c.firstname_customer, c.lastname_customer, c.phone_customer, c.id_customer, c.photo_customer, c.email_customer,
                 tp.id_typepay, tp.name_typepay, tp.description_typepay,
-                (SELECT SUM(dr.quantity_detres) FROM detail_reservation dr WHERE dr.id_reservation = r.id_reservation) As quantity_detres,
-                (SELECT SUM(dr.total_detres) FROM detail_reservation dr WHERE dr.id_reservation = r.id_reservation) As gtotal_detres
+                (SELECT SUM(dr.quantity_detres) FROM detail_reservation dr WHERE dr.id_reservation = r.id_reservation) As quantity_detres
                 FROM reservation r 
                 INNER JOIN customer c ON r.id_customer = c.id_customer
                 INNER JOIN timeline_reservation tl ON tl.id_timelinereserv = r.id_timelinereserv
@@ -94,7 +93,7 @@
             function refresh_count_notif() {
 
                 jQuery.ajax({
-                    url: 'apiManagePanel/query_count_view_notifications.php',
+                    url: 'apiManagePanel/get_count_notification.php',
                     type: 'POST',
                     success: function (results) {
                         jQuery(".badge-notify").html(results);
@@ -102,7 +101,7 @@
                 });
             }
 
-            //tnotif = setInterval(refresh_count_notif, 1000);
+            tnotif = setInterval(refresh_count_notif, 10000);
             //onload="javascript:verifyStatesButtons(<?php echo $rowSel['name_timelinereserv']; ?>)"
 
             function get_timeline(id) {
@@ -115,6 +114,7 @@
                     },
                     success: function (results) {
                         jQuery("#retrieve-timeline").html(results);
+                        $("#progress-linetime").addClass('d-none');
                     }
                 });
             }
@@ -154,7 +154,7 @@
                 </div>
 
                 <li class="nav-item">
-                    <a class="nav-link " href="notification-list.php">
+                    <a class="nav-link " href="notification.php">
                         <i class="fas fa-fw fa-bell"></i>
                         <span>Notificaciones</span>
                     </a>
@@ -412,7 +412,7 @@
                                         }
 
                                         $.ajax({
-                                            url: "apiManagePanel/query_latest_notifications.php",
+                                            url: "apiManagePanel/layout_list_notification_popup.php",
                                             type: "POST",
                                             processData: false,
                                             success: function (data) {
@@ -443,7 +443,7 @@
                                     <div id="notification-latest"></div>
 
                                     <a class="dropdown-item text-center small text-gray-500"
-                                        href="notification-list.php">Mostrar todo</a>
+                                        href="notifications.php">Mostrar todo</a>
                                 </div>
                             </li>
 
@@ -568,25 +568,25 @@
                                                     </h6>
                                                     <small class="card-text text-muted text-left">Monto total:</small>
                                                     <h6 class=" is-text-black text-left">
-                                                        <?php echo $rowSel["gtotal_detres"]; ?>
+                                                        <?php echo $rowSel["grandtotal_reservation"]; ?>
                                                     </h6>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="carousel-item row no-gutters">
+                                        <div class="carousel-item row no-gutters d-none">
                                             <div class="col-4 float-left">
 
                                             </div>
                                         </div>
                                     </div>
 
-                                    <a class="carousel-control-prev" href="#recipeCarousel" role="button"
+                                    <a class="carousel-control-prev d-none" href="#recipeCarousel" role="button"
                                         data-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true">
                                         </span>
                                         <span class="sr-only">Anterior</span>
                                     </a>
-                                    <a class="carousel-control-next" href="#recipeCarousel" role="button"
+                                    <a class="carousel-control-next d-none" href="#recipeCarousel" role="button"
                                         data-slide="next">
                                         <span class="carousel-control-next-icon" aria-hidden="true">
                                         </span>
@@ -670,7 +670,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="carousel-item  no-gutters">
+                                        <div class="carousel-item  no-gutters d-none">
                                             <div class="">
 
                                             </div>
@@ -692,20 +692,43 @@
                                 </div>
                             </div>
                             <!-- TIMELINE STATE RESERVATION -->
-                            <div class="card mb-4 card-hover-style">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="page-header">
-                                                <h4 class="is-text-black">Linea de tiempo</h4>
-                                            </div>
-                                            <div id="retrieve-timeline">
 
+                            <section class="row">
+
+                                <div class="col-md-3 col-lg-3 col-12">
+                                    <div class="card card-hover-style mb-4">
+                                        <div class="card-body">
+
+                                            <h5 class="card-title"><i
+                                                    class="fas text-secondary faw fa-envelope"></i>&nbsp;Recado</h5>
+                                            <p class="card-text"><?php echo $rowSel["detail_reservation"]; ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-9 col-lg-9 col-12">
+                                    <div class="card mb-4 card-hover-style">
+                                        <div class="card-body">
+                                            <h4 class="card-title"><i
+                                                    class=" text-secondary fas faw fa-tasks"></i>&nbsp;Linea de tiempo
+                                            </h4>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="page-header">
+                                                        <div id="progress-linetime" class="progress-line "></div>
+                                                    </div>
+                                                    <div id="retrieve-timeline">
+
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+
+                            </section>
+
+
 
                             <?php
 
@@ -739,7 +762,10 @@
 
                             <!-- DataTale -->
                             <div class="card  mb-2 card-hover-style">
+
                                 <div class="card-body">
+                                    <h4 class="card-title"><i class="fas text-secondary faw fa-list-ul"></i>&nbsp;Lista
+                                        de Pedidos</h4>
                                     <div class="table-responsive">
                                         <table class="table table-bordered " class="display" id="dataTable" width="100%"
                                             cellspacing="0">
@@ -779,7 +805,7 @@
                                                 <tr>
                                                     <td class="align-content-center text-center align-align-self-center small"
                                                         width="10%">
-                                                        <i class="icon-hover-blue fas faw fa-eye" type="button"
+                                                        <i class="icon-hover-yellow fas faw fa-eye" type="button"
                                                             style="border-radius: 9px; padding: 9px;"
                                                             title="Mostrar detalles del Menu"
                                                             onclick='getDetail("<?php echo $row_menu["id_menu"]; ?>","<?php echo $row["target_detres"]; ?>")'>&nbsp;Mostrar</i>
@@ -802,7 +828,17 @@
                                                     <td class="text-center" width="10%">
                                                         <?php echo $row_menu["total_detres"]?>
                                                     </td>
-                                                    <td class="text-center"><?php echo "" ?>
+                                                    <td class="small text-center">
+                                                        <?php                                                    
+                                                            if ($row_menu['state_menu']==1) {
+                                                                $state_menu = "Disponible";
+                                                                echo  "<i class='fas fa-check text-success fa-fw'></i> $state_menu";
+                                                            } elseif ($row_menu['state_menu']==0) {
+                                                                $state_menu = "Agotado";
+                                                                echo  "<i class='fas fa-hourglass-half text-danger  fa-fw'></i> $state_menu";
+                                                            }
+                                                            
+                                                        ?>
                                                     </td>
                                                 </tr>
                                                 <?php
@@ -815,7 +851,7 @@
                                                 <tr>
                                                     <td class="align-content-center text-center align-align-self-center small"
                                                         width="10%">
-                                                        <i class="icon-hover-blue fas faw fa-eye" type="button"
+                                                        <i class="icon-hover-yellow fas faw fa-eye" type="button"
                                                             style="border-radius: 9px; padding: 9px;"
                                                             title="Mostrar detalles del Menu"
                                                             onclick='getDetail("<?php echo $row_prod["id_product"]; ?>","<?php echo $row["target_detres"]; ?>")'>&nbsp;Mostrar</i>
@@ -838,7 +874,17 @@
                                                     <td class="text-center" width="10%">
                                                         <?php echo $row_prod["total_detres"]?>
                                                     </td>
-                                                    <td class="text-center"><?php echo "" ?>
+                                                    <td class="text-center small"><?php
+                                                    
+                                                            if ($row_prod['state_product']==1) {
+                                                                $state_product = "Disponible";
+                                                                echo  "<i class='fas fa-check text-success fa-fw'></i> $state_product";
+                                                            } elseif ($row_prod['state_product']==0) {
+                                                                $state_product = "Agotado";
+                                                                echo  "<i class='fas fa-hourglass-half text-danger fa-fw'></i> $state_product";
+                                                            }
+                                                            
+                                                        ?>
                                                     </td>
                                                 </tr>
                                                 <?php
@@ -904,7 +950,7 @@
             </div>
 
             <!-- Confirmo Modal-->
-            <div class="modal fade" id="PositiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <div class="modal fade" id="ConfirmResModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -945,6 +991,78 @@
                             <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
                             <input type="button" class="btn btn-success" href="#"
                                 onclick=' reservationRechazed("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
+                                value="Confirmar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preparation Modal-->
+            <div class="modal fade" id="PreparationResModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>¿Desea pasar al estado de preparación la reservación?</h6>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
+                            <input type="button" class="btn btn-success" href="#"
+                                onclick='actionPreparationRes("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
+                                value="Confirmar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Collect Modal-->
+            <div class="modal fade" id="CollectResModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>¿Desea poner en estado de recojo la reservación?</h6>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
+                            <input type="button" class="btn btn-success" href="#"
+                                onclick='actionCollectRes("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
+                                value="Confirmar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECEIVED Modal-->
+            <div class="modal fade" id="ReceivedResModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmar</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>¿Desea confirmar la entrega de la reservación al cliente?</h6>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-danger" type=" button" data-dismiss="modal">Cancelar</button>
+                            <input type="button" class="btn btn-success" href="#"
+                                onclick='actionReceivedRes("<?php echo $rowSel["id_customer"]; ?>", "<?php echo $rowSel["id_reservation"]; ?>");'
                                 value="Confirmar">
                         </div>
                     </div>

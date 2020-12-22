@@ -112,7 +112,7 @@ h2 {
 }
 
 .icon-hover-yellow:hover {
-    color: rgba(230, 202, 40, 0.61);
+    color: rgba(216, 159, 13, 0.61);
     box-shadow: 0 4px 8px 0 rgba(196, 196, 196, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -173,3 +173,56 @@ h2 {
     margin-bottom: 0.5rem;
     border-color: #ffc107;
 }*/
+.progress-line,
+.progress-line:before {
+    height: 3px;
+    width: 100%;
+    margin: 0;
+}
+
+.progress-line {
+    background-color: #fcf1b3;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.progress-line:before {
+    background-color: #fabc35;
+    content: '';
+    -webkit-animation: running-progress 2s cubic-bezier(0.7, 0, 0.2, 0.7) infinite;
+    animation: running-progress 2s cubic-bezier(0.7, 0, 0.2, 0.7) infinite;
+}
+
+@-webkit-keyframes running-progress {
+    0% {
+        margin-left: 0px;
+        margin-right: 100%;
+    }
+
+    50% {
+        margin-left: 25%;
+        margin-right: 0%;
+    }
+
+    100% {
+        margin-left: 100%;
+        margin-right: 0;
+    }
+}
+
+@keyframes running-progress {
+    0% {
+        margin-left: 0px;
+        margin-right: 100%;
+    }
+
+    50% {
+        margin-left: 25%;
+        margin-right: 0%;
+    }
+
+    100% {
+        margin-left: 100%;
+        margin-right: 0;
+    }
+}

@@ -41,7 +41,7 @@
             function refresh_count_notif() {
 
                 jQuery.ajax({
-                    url: 'apiManagePanel/query_count_view_notifications.php',
+                    url: 'apiManagePanel/get_count_notification.php',
                     type: 'POST',
                     success: function (results) {
                         jQuery(".badge-notify").html(results);
@@ -49,7 +49,7 @@
                 });
             }
 
-            tnotif = setInterval(refresh_count_notif, 5000);
+            tnotif = setInterval(refresh_count_notif, 10000);
         </script>
 
         <!-- Page Wrapper -->
@@ -84,7 +84,7 @@
                 </div>
 
                 <li class="nav-item">
-                    <a class="nav-link " href="notification-list.php">
+                    <a class="nav-link " href="notification.php">
                         <i class="fas fa-fw fa-bell"></i>
                         <span>Notificaciones</span>
                     </a>
@@ -280,7 +280,7 @@
                                         }
 
                                         $.ajax({
-                                            url: "apiManagePanel/query_latest_notifications.php",
+                                            url: "apiManagePanel/layout_list_notification_popup.php",
                                             type: "POST",
                                             processData: false,
                                             success: function (data) {
@@ -311,7 +311,7 @@
                                     <div id="notification-latest"></div>
 
                                     <a class="dropdown-item text-center small text-gray-500"
-                                        href="notification-list.php">Mostrar todo</a>
+                                        href="notifications.php">Mostrar todo</a>
                                 </div>
                             </li>
 
